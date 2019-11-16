@@ -17,11 +17,13 @@ import androidx.core.content.FileProvider
 import androidx.lifecycle.ViewModelProviders
 import br.com.caelum.twittelumapp.R
 import br.com.caelum.twittelumapp.bancodedados.TwittelumDatabase
+import br.com.caelum.twittelumapp.extensions.decodificaParaBase64
 import br.com.caelum.twittelumapp.modelo.Tweet
 import br.com.caelum.twittelumapp.viewmodel.TweetViewModel
 import br.com.caelum.twittelumapp.viewmodel.ViewModelFactory
 import kotlinx.android.synthetic.main.activity_tweet.*
 import java.io.File
+
 
 class TweetActivity : AppCompatActivity() {
 
@@ -107,9 +109,15 @@ class TweetActivity : AppCompatActivity() {
 
         val bitmap = BitmapFactory.decodeFile(caminhoDaFoto)
 
-        val scaledBitmap = Bitmap.createScaledBitmap(bitmap,300,300, true)
+        val bm = Bitmap.createScaledBitmap(bitmap, bitmap.width, bitmap.height, true)
 
-        tweet_foto.setImageBitmap(scaledBitmap)
+        //val scaledBitmap = Bitmap.createScaledBitmap(bitmap,300,300, true)
+
+        tweet_foto.setImageBitmap(bm)
+
+        val fotoNaBase64 = bm.decodificaParaBase64()
+
+        tweet_foto.tag = fotoNaBase64
 
         tweet_foto.scaleType = ImageView.ScaleType.FIT_XY
 
@@ -117,6 +125,11 @@ class TweetActivity : AppCompatActivity() {
 
     private fun publicaTweet(){
 
+        val tweet = criaTweet()
+        viewModel.salva(tweet)
+        Toast.makeText(this, "$tweet foi salvo com sucesso :D", Toast.LENGTH_LONG).show()
+
+/*
         val campoDeMensagemDoTweet = findViewById<EditText>(R.id.tweet_mensagem)
 
         val mensagemDoTweet : String = campoDeMensagemDoTweet.text.toString()
@@ -125,10 +138,21 @@ class TweetActivity : AppCompatActivity() {
 
         viewModel.salva(tweet)
 
+ */
+
 /*        val tweetDao = TwittelumDatabase.getInstance(this).getTweetDao()
         tweetDao.salva(tweet)*/
 
         Toast.makeText(this, "$tweet foi salvo com sucesso :D", Toast.LENGTH_LONG).show()
+
+    }
+
+    private fun criaTweet(): Tweet {
+
+        val campoDeMensagemDoTweet = findViewById<EditText>(R.id.tweet_mensagem)
+        val mensagemDoTweet: String = campoDeMensagemDoTweet.text.toString()
+        val foto: String? = tweet_foto.tag as String?
+        return Tweet(mensagemDoTweet, foto)
 
     }
 

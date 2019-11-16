@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import br.com.caelum.twittelumapp.modelo.Tweet
 
 
-@Database(entities = [Tweet::class], version = 1)
+@Database(entities = [Tweet::class], version = 2)
 abstract class TwittelumDatabase: RoomDatabase() {
 
     abstract fun getTweetDao(): TweetDao
@@ -33,6 +33,7 @@ abstract class TwittelumDatabase: RoomDatabase() {
         private fun criaBanco(context: Context): TwittelumDatabase {
             val database: TwittelumDatabase = Room.databaseBuilder(context, TwittelumDatabase::class.java, DATABASE)
                 .allowMainThreadQueries()
+                .addMigrations(Migration1Para2)
                 .build()
             return database
         }
