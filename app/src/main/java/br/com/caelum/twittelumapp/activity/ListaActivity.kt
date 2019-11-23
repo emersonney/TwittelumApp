@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import br.com.caelum.twittelumapp.R
+import br.com.caelum.twittelumapp.adapter.TweetAdapter
 import br.com.caelum.twittelumapp.bancodedados.TwittelumDatabase
 import br.com.caelum.twittelumapp.modelo.Tweet
 import br.com.caelum.twittelumapp.viewmodel.TweetViewModel
@@ -73,8 +74,11 @@ class ListaActivity : AppCompatActivity() {
     }
 
     private fun observer(): Observer<List<Tweet>> {
-        return Observer {
-            lista_tweet.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, it)
+        return Observer {tweets ->
+            tweets?.let {
+                lista_tweet.adapter = TweetAdapter(tweets)
+            }
+//            lista_tweet.adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, it)
         }
     }
 
